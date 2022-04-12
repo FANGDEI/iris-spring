@@ -4,6 +4,7 @@ import (
 	"iris-jwt/repo"
 	"iris-jwt/utils"
 	"log"
+	"regexp"
 	"time"
 
 	"github.com/iris-contrib/middleware/jwt"
@@ -15,11 +16,16 @@ type UserDto struct {
 	Password string `json:"password"`
 }
 
+type EmailDto struct {
+	Email string `json:"email"`
+}
+
 func Login(ctx iris.Context) {
 	var userDto UserDto
 	err := ctx.ReadJSON(&userDto)
 	if err != nil {
 		log.Println("Login params is wrong")
+		return
 	}
 	user := repo.SelectUserInformationByUsername(userDto.Username)
 	if user.Password == userDto.Password {
@@ -48,6 +54,25 @@ func Login(ctx iris.Context) {
 		Succeed: false,
 		Msg:     "用户名或密码错误",
 	})
+}
+
+func GetCode(ctx iris.Context) {
+	var emailDto EmailDto
+	ctx.ReadJSON(&emailDto)
+
+	// 正则判断 [1-9][0-9]+@qq.com
+	matched, _ := regexp.MatchString(`[1-9][0-9]+@qq.com`, emailDto.Email)
+	if !matched {
+		ctx.JSON(Result{
+			Succeed: false,
+			Msg:     "请输入正确的邮箱",
+		})
+		return
+	}
+
+	code := utils.GetVerificationCode()
+
+	utils.SendEmail("Iris-Spring", emailDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
 }
 
 func Register(ctx iris.Context) {
