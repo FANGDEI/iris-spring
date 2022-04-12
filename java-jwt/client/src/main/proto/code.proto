@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_package = "com.dyw.jwt.proto.code";
+option java_multiple_files=true;
+
+package getcode;
+
+service getCode {
+  rpc getCode(CodeRequest) returns (CodeResponse);
+}
+
+message CodeRequest {
+  string email    = 1;
+}
+
+message CodeResponse {
+  bool succeed    = 1;
+  string message  = 2;
+}
