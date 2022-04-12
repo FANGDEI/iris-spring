@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+option go_package = "./;proto";
+
+package getcode;
+
+service getCode {
+    rpc getCode(CodeRequest) returns (CodeResponse);
+}
+
+message CodeRequest {
+    string email    = 1;
+}
+
+message CodeResponse {
+    bool succeed    = 1;
+    string message  = 2;
+}
