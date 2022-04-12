@@ -1,6 +1,7 @@
 package main
 
 import (
+	"iris-jwt/config"
 	"iris-jwt/router"
 	"log"
 
@@ -12,7 +13,7 @@ func main() {
 
 	router.Router(app)
 
-	err := app.Run(iris.Addr(":7777"))
+	err := app.Run(iris.Addr(config.Configuration.Port))
 	if err != nil {
 		log.Fatalln("failed to run the app")
 	}
