@@ -1,7 +1,8 @@
 package handlers
 
 import (
-	"iris-jwt/model"
+	"iris-jwt/repo"
+	"iris-jwt/utils"
 	"log"
 	"time"
 
@@ -20,7 +21,7 @@ func Login(ctx iris.Context) {
 	if err != nil {
 		log.Println("Login params is wrong")
 	}
-	user := model.SelectUserInformationByUsername(userDto.Username)
+	user := repo.SelectUserInformationByUsername(userDto.Username)
 	if user.Password == userDto.Password {
 		m := make(map[string]string)
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -40,12 +41,12 @@ func Login(ctx iris.Context) {
 			Result:  m,
 		})
 		// redis key 设置为 30 天后过期
-		model.SetValueWithExpire("Bearer "+tokenString, "token value, insignificance", time.Minute*60*24*30)
+		utils.SetValueWithExpire("Bearer "+tokenString, "token value, insignificance", time.Minute*60*24*30)
 		return
 	}
 	ctx.JSON(Result{
 		Succeed: false,
-		Msg: "用户名或密码错误",
+		Msg:     "用户名或密码错误",
 	})
 }
 

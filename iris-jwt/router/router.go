@@ -2,7 +2,7 @@ package router
 
 import (
 	"iris-jwt/handlers"
-	"iris-jwt/model"
+	"iris-jwt/utils"
 	"log"
 
 	"github.com/iris-contrib/middleware/jwt"
@@ -37,7 +37,7 @@ func jwtMiddleware() *jwt.Middleware {
 			ctx.StatusCode(iris.StatusUnauthorized)
 			ctx.JSON(handlers.Result{
 				Succeed: false,
-				Msg: err.Error(),
+				Msg:     err.Error(),
 			})
 		},
 	})
@@ -46,12 +46,12 @@ func jwtMiddleware() *jwt.Middleware {
 
 func jwtRedisVerifyHandler(ctx iris.Context) {
 	token := ctx.GetHeader("Authorization")
-	_, err := model.GetValue(token)
+	_, err := utils.GetValue(token)
 	if err != nil || token == "" {
 		log.Println("invalid token or the token is nil")
 		ctx.JSON(handlers.Result{
 			Succeed: false,
-			Msg: "the token is invalid or the token is null",
+			Msg:     "the token is invalid or the token is null",
 		})
 		return
 	}

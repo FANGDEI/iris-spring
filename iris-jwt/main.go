@@ -1,7 +1,6 @@
 package main
 
 import (
-	"iris-jwt/model"
 	"iris-jwt/router"
 	"log"
 
@@ -9,9 +8,6 @@ import (
 )
 
 func main() {
-	model.InitDB()
-	model.InitRedis()
-
 	app := iris.New()
 
 	router.Router(app)
