@@ -1,0 +1,23 @@
+
+spring:
+  cloud:
+    consul:
+      host: localhost
+      port: 8500
+      discovery:
+        register: true
+        instance-id: ${spring.application.name}-01
+        service-name: ${spring.application.name}
+        port: ${server.port}
+        prefer-ip-address: true
+        ip-address: ${spring.cloud.client.ip-address}
+  application:
+    name: cloud-grpc-server
+grpc:
+  server:
+    port: 0
+  client:
+    GLOBAL:
+      negotiation-type: tls
+server:
+  port: 8080
