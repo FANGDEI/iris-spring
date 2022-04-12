@@ -26,6 +26,7 @@ type configuration struct {
 	Port  string  `json:"port"`
 	Db    db      `json:"db"`
 	Redis redisDB `json:"redis"`
+	Mail  mail    `json:"mail"`
 }
 
 type db struct {
@@ -39,4 +40,11 @@ type redisDB struct {
 	Addr     string `json:"addr"`
 	Password string `json:"password"`
 	DBnum    int    `json:"db_num"`
+}
+
+type mail struct {
+	ServerHost string `json:"serverhost"`
+	ServerPort int    `json:"serverport"`
+	FromEamil  string `json:"formeamil"`
+	Password   string `json:"password"`
 }

@@ -10,5 +10,11 @@
     "addr": "110.42.159.47:7779",
     "password": "ff1639579565",
     "db_num": 0
+  },
+  "mail": {
+    "serverhost": "smtp.qq.com",
+    "serverport": 465,
+    "formeamil": "1842501760@qq.com",
+    "password": "xrggjyvgyhrgbhjd"
   }
 }
