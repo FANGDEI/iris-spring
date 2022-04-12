@@ -1,7 +1,6 @@
 package main
 
 import (
-	"iris-jwt/config"
 	"iris-jwt/model"
 	"iris-jwt/router"
 	"log"
@@ -10,11 +9,6 @@ import (
 )
 
 func main() {
-	err := config.Init()
-	if err != nil {
-		log.Fatalln("failed to read config.yml")
-	}
-
 	model.InitDB()
 	model.InitRedis()
 
@@ -22,7 +16,7 @@ func main() {
 
 	router.Router(app)
 
-	err = app.Run(iris.Addr(":7777"))
+	err := app.Run(iris.Addr(":7777"))
 	if err != nil {
 		log.Fatalln("failed to run the app")
 	}

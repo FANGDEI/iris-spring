@@ -37,7 +37,7 @@ func jwtMiddleware() *jwt.Middleware {
 			ctx.StatusCode(iris.StatusUnauthorized)
 			ctx.JSON(handlers.Result{
 				Succeed: false,
-				Message: err.Error(),
+				Msg: err.Error(),
 			})
 		},
 	})
@@ -51,7 +51,7 @@ func jwtRedisVerifyHandler(ctx iris.Context) {
 		log.Println("invalid token or the token is nil")
 		ctx.JSON(handlers.Result{
 			Succeed: false,
-			Message: "the token is invalid or the token is null",
+			Msg: "the token is invalid or the token is null",
 		})
 		return
 	}

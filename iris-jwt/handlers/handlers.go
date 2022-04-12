@@ -36,7 +36,7 @@ func Login(ctx iris.Context) {
 		m["token"] = tokenString
 		ctx.JSON(Result{
 			Succeed: true,
-			Message: "登录成功",
+			Msg:     "登录成功",
 			Result:  m,
 		})
 		// redis key 设置为 30 天后过期
@@ -45,7 +45,7 @@ func Login(ctx iris.Context) {
 	}
 	ctx.JSON(Result{
 		Succeed: false,
-		Message: "用户名或密码错误",
+		Msg: "用户名或密码错误",
 	})
 }
 
