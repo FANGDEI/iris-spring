@@ -2,6 +2,7 @@ package main
 
 import (
 	"iris-jwt/config"
+	"iris-jwt/consul"
 	"iris-jwt/router"
 	"log"
 
@@ -9,6 +10,8 @@ import (
 )
 
 func main() {
+	consul.ConsulFindServer()
+
 	app := iris.New()
 
 	router.Router(app)
