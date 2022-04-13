@@ -15,7 +15,7 @@ import net.devh.boot.grpc.server.interceptor.GrpcGlobalServerInterceptor;
  * context via {@link GlobalInterceptorConfiguration}, but is also possible to directly annotate this class with
  * {@link GrpcGlobalServerInterceptor}.
  */
-// @GrpcGlobalServerInterceptor
+//@GrpcGlobalServerInterceptor
 public class LogGrpcInterceptor implements ServerInterceptor {
 
     private static final Logger log = LoggerFactory.getLogger(LogGrpcInterceptor.class);
