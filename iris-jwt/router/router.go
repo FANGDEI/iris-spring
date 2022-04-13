@@ -12,5 +12,6 @@ func Router(app *iris.Application) {
 
 	app.Post("/login", handlers.Login)
 	app.Post("/getCode", handlers.GetCode)
-	app.Get("/service", j.Serve, middleware.JWTRedisVerifyHandler, handlers.Service)
+	app.Post("/register", handlers.Register)
+	app.Get("/userService", j.Serve, middleware.JWTRedisVerifyHandler, handlers.UserService)
 }
