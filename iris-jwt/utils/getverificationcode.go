@@ -13,5 +13,5 @@ func GetVerificationCode() string {
 	for i := 0; i < 6; i++ {
 		code = append(code, BASE_VALUE[rand.Intn(len(BASE_VALUE))])
 	}
-	return string(code)
+	return string(code)[6:]
 }
