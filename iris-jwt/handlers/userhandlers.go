@@ -23,12 +23,14 @@ func Login(ctx iris.Context) {
 	var userDto UserDto
 	err := ctx.ReadJSON(&userDto)
 	if err != nil {
+		log.Println("failed to read params.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因登录失败")
 		return
 	}
 
 	user, err := repo.SelectUserInformationByUsername(userDto.Username)
 	if err != nil {
+		log.Println("failed to get user information.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因登录失败")
 		return
 	}
@@ -74,6 +76,7 @@ func GetCode(ctx iris.Context) {
 	// 发送邮件验证码
 	err := utils.SendEmail("Iris-Spring", userDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
 	if err != nil {
+		log.Println("failed to send the eamil.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因验证码发送错误")
 		return
 	}
@@ -81,7 +84,7 @@ func GetCode(ctx iris.Context) {
 	// code 存入 redis 十五分钟后失效
 	err = utils.SetValueWithExpire(code, userDto.Email, time.Minute*15)
 	if err != nil {
-		log.Println("failed to put verifycode into redis")
+		log.Println("failed to put verifycode into redis.", err)
 	}
 
 	utils.ResultWithoutData(ctx, true, "验证码已发送")
@@ -91,6 +94,7 @@ func Register(ctx iris.Context) {
 	var userDto UserDto
 	err := ctx.ReadJSON(&userDto)
 	if err != nil {
+		log.Println("failed to read params.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
@@ -109,6 +113,7 @@ func Register(ctx iris.Context) {
 
 	email, errGet := utils.GetValue(userDto.Code)
 	if errGet != nil {
+		log.Println("failed to get value from redis.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
@@ -123,10 +128,13 @@ func Register(ctx iris.Context) {
 	errDeleteValue := utils.DeleteValue(userDto.Code)
 	if errDeleteValue != nil {
 		log.Println("failed to delete value from redis")
+		utils.ResultWithoutData(ctx, false, "未知原因注册失败，请稍后重试")
+		return
 	}
 
 	cnt, errInsert := repo.InsertUser(userDto.Username, userDto.Password, userDto.Email)
 	if errInsert != nil || cnt == 0 {
+		log.Println("failed to insert user into db.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
@@ -138,4 +146,17 @@ func UserService(ctx iris.Context) {
 	jwtInfo := ctx.Values().Get("jwt").(*jwt.Token).Claims
 	ctx.JSON(jwtInfo)
 	ctx.HTML("<h1> this is a service </h1>")
+}
+
+func Logout(ctx iris.Context) {
+	token := ctx.GetHeader("Authorization")
+
+	err := utils.DeleteValue(token)
+	if err != nil {
+		log.Println("failed to delete token")
+		utils.ResultWithoutData(ctx, false, "未知原因退出登录失败")
+		return
+	}
+
+	utils.ResultWithoutData(ctx, true, "退出登录成功")
 }
