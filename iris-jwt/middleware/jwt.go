@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"iris-jwt/constant"
 	"iris-jwt/model"
 	"iris-jwt/utils"
 	"log"
@@ -17,7 +18,7 @@ func JWTMiddleware() *jwt.Middleware {
 		Extractor: jwt.FromAuthHeader,
 		// 密钥
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			return []byte("dyw is a big SB"), nil
+			return []byte(constant.TOKEN_SECRET), nil
 		},
 		// 签名算法
 		SigningMethod: jwt.SigningMethodHS256,
@@ -37,6 +38,7 @@ func JWTMiddleware() *jwt.Middleware {
 	return j
 }
 
+// Redis验证 token 中间件
 func JWTRedisVerifyHandler(ctx iris.Context) {
 	token := ctx.GetHeader("Authorization")
 	_, err := utils.GetValue(token)
