@@ -38,9 +38,9 @@ func Login(ctx iris.Context) {
 	if user.Password == userDto.Password {
 		m := make(map[string]string)
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"Id":         user.Id,
-			"Username":   user.Username,
-			"Permission": user.Permission,
+			"id":         user.Id,
+			"username":   user.Username,
+			"permission": user.Permission,
 			"iss":        "FANG",
 			"iat":        time.Now().Unix(),
 			// 设置三十天后token过期
