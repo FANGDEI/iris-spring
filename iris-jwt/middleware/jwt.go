@@ -4,7 +4,6 @@ import (
 	"iris-jwt/constant"
 	"iris-jwt/model"
 	"iris-jwt/utils"
-	"log"
 
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12"
@@ -43,7 +42,6 @@ func JWTRedisVerifyHandler(ctx iris.Context) {
 	token := ctx.GetHeader("Authorization")
 	_, err := utils.GetValue(token)
 	if err != nil || token == "" {
-		log.Println("invalid token or the token is nil")
 		ctx.JSON(model.Result{
 			Succeed: false,
 			Msg:     "the token is invalid or the token is null",
