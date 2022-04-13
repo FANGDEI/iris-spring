@@ -20,3 +20,7 @@ func SetValue(key string, value interface{}) error {
 func GetValue(key string) (string, error) {
 	return RedisDB.Get(key).Result()
 }
+
+func DeleteValue(key string) error {
+	return RedisDB.Del(key).Err()
+}

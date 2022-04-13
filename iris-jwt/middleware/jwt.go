@@ -1,9 +1,9 @@
 package middleware
 
 import (
-	"iris-jwt/handlers"
+	"iris-jwt/constant"
+	"iris-jwt/model"
 	"iris-jwt/utils"
-	"log"
 
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12"
@@ -17,7 +17,7 @@ func JWTMiddleware() *jwt.Middleware {
 		Extractor: jwt.FromAuthHeader,
 		// 密钥
 		ValidationKeyGetter: func(token *jwt.Token) (interface{}, error) {
-			return []byte("dyw is a big SB"), nil
+			return []byte(constant.TOKEN_SECRET), nil
 		},
 		// 签名算法
 		SigningMethod: jwt.SigningMethodHS256,
@@ -28,7 +28,7 @@ func JWTMiddleware() *jwt.Middleware {
 			}
 			ctx.StopExecution()
 			ctx.StatusCode(iris.StatusUnauthorized)
-			ctx.JSON(handlers.Result{
+			ctx.JSON(model.Result{
 				Succeed: false,
 				Msg:     err.Error(),
 			})
@@ -37,12 +37,12 @@ func JWTMiddleware() *jwt.Middleware {
 	return j
 }
 
+// Redis验证 token 中间件
 func JWTRedisVerifyHandler(ctx iris.Context) {
 	token := ctx.GetHeader("Authorization")
 	_, err := utils.GetValue(token)
 	if err != nil || token == "" {
-		log.Println("invalid token or the token is nil")
-		ctx.JSON(handlers.Result{
+		ctx.JSON(model.Result{
 			Succeed: false,
 			Msg:     "the token is invalid or the token is null",
 		})

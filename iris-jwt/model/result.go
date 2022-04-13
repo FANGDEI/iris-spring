@@ -1,4 +1,4 @@
-package handlers
+package model
 
 type Result struct {
 	Succeed bool        `json:"succeed"`

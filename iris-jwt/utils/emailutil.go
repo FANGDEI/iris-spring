@@ -2,14 +2,13 @@ package utils
 
 import (
 	"iris-jwt/config"
-	"log"
 
 	"github.com/go-gomail/gomail"
 )
 
 var m *gomail.Message
 
-func SendEmail(sender, receiver, subject, body string) {
+func SendEmail(sender, receiver, subject, body string) error {
 	m = gomail.NewMessage()
 	// 收件人
 	m.SetHeader("To", receiver)
@@ -23,7 +22,7 @@ func SendEmail(sender, receiver, subject, body string) {
 	// 发送
 	err := d.DialAndSend(m)
 	if err != nil {
-		log.Println("发送邮件失败")
-		return
+		return err
 	}
+	return nil
 }
