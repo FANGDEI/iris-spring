@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"iris-jwt/repo"
 	"iris-jwt/utils"
 	"log"
@@ -25,9 +24,10 @@ func Login(ctx iris.Context) {
 	var userDto UserDto
 	err := ctx.ReadJSON(&userDto)
 	if err != nil {
-		log.Println("Login params is wrong")
+		utils.ResultWithoutData(ctx, false, "未知原因登录失败")
 		return
 	}
+
 	user := repo.SelectUserInformationByUsername(userDto.Username)
 	if user.Password == userDto.Password {
 		m := make(map[string]string)
@@ -42,19 +42,15 @@ func Login(ctx iris.Context) {
 		})
 		tokenString, _ := token.SignedString([]byte("dyw is a big SB"))
 		m["token"] = tokenString
-		ctx.JSON(Result{
-			Succeed: true,
-			Msg:     "登录成功",
-			Result:  m,
-		})
+
+		utils.ResultWithData(ctx, true, "登录成功", m)
+
 		// redis key 设置为 30 天后过期
 		utils.SetValueWithExpire("Bearer "+tokenString, "token value, insignificance", time.Minute*60*24*30)
 		return
 	}
-	ctx.JSON(Result{
-		Succeed: false,
-		Msg:     "用户名或密码错误",
-	})
+
+	utils.ResultWithoutData(ctx, false, "用户名或密码错误")
 }
 
 func GetCode(ctx iris.Context) {
@@ -64,25 +60,25 @@ func GetCode(ctx iris.Context) {
 	// 正则判断 [1-9][0-9]+@qq.com
 	matched, _ := regexp.MatchString(`[1-9][0-9]+@qq.com`, emailDto.Email)
 	if !matched {
-		ctx.JSON(Result{
-			Succeed: false,
-			Msg:     "请输入正确的邮箱",
-		})
+		utils.ResultWithoutData(ctx, false, "请输入正确的邮箱")
 		return
 	}
 
 	code := utils.GetVerificationCode()
-	fmt.Println(code)
-	body := "验证码十五分钟之内有效<br>验证码: " + code
-	fmt.Printf("body: %v\n", body)
-	ctx.HTML(body)
+
 	err := utils.SendEmail("Iris-Spring", emailDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
 	if err != nil {
-		ctx.JSON(Result{
-			Succeed: false,
-			Msg:     "未知原因验证码发送错误",
-		})
+		utils.ResultWithoutData(ctx, false, "未知原因验证码发送错误")
+		return
 	}
+
+	// code 存入 redis 十五分钟后失效
+	err = utils.SetValueWithExpire(code, emailDto.Email, time.Minute*15)
+	if err != nil {
+		log.Println("验证码存入redis失败")
+	}
+
+	utils.ResultWithoutData(ctx, true, "验证码已发送")
 }
 
 func Register(ctx iris.Context) {
