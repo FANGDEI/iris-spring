@@ -8,12 +8,8 @@ import com.dyw.provider.util.VerificationCodeUtil;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 import net.devh.boot.grpc.server.service.GrpcService;
-import org.apache.rocketmq.client.producer.SendCallback;
-import org.apache.rocketmq.client.producer.SendResult;
-import org.apache.rocketmq.spring.core.RocketMQTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -35,8 +31,6 @@ import java.util.concurrent.TimeUnit;
 public class CodeServiceImpl extends getCodeGrpc.getCodeImplBase {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    private RocketMQTemplate rocketMQTemplate;
     @Value("${spring.mail.username}")
     private String from;
     @Autowired
@@ -48,6 +42,7 @@ public class CodeServiceImpl extends getCodeGrpc.getCodeImplBase {
         String email = request.getEmail();
         System.out.println(email);
         String code = VerificationCodeUtil.generateVerificationCode();
+        CodeResponse response= null;
         stringRedisTemplate.opsForValue().set("code"+email,code,15, TimeUnit.MINUTES);
         try {
             log.info("消费者接收到发送验证码的通知");
@@ -64,11 +59,12 @@ public class CodeServiceImpl extends getCodeGrpc.getCodeImplBase {
             String process = templateEngine.process("code.html", context);
             mimeMessageHelper.setText(process,true);
             mailSender.send(mimeMessage);
+            response = CodeResponse.newBuilder().setMessage("成功").build();
         } catch (MessagingException e) {
+            response = CodeResponse.newBuilder().setMessage("失败").build();
             log.error("邮件发送失败");
             e.printStackTrace();
         }
-        CodeResponse response = CodeResponse.newBuilder().setMessage("成功").build();
         responseObserver.onNext(response);
         responseObserver.onCompleted();
     }

@@ -19,8 +19,8 @@ public class GlobalInterceptorConfiguration {
      *
      * @return The newly created bean.
      */
-//    @GrpcGlobalServerInterceptor
-//    LogGrpcInterceptor logServerInterceptor() {
-//        return new LogGrpcInterceptor();
-//    }
+    @GrpcGlobalServerInterceptor
+    LogGrpcInterceptor logServerInterceptor() {
+        return new LogGrpcInterceptor();
+    }
 }

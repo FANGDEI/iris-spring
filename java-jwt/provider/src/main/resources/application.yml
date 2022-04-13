@@ -25,7 +25,6 @@ spring:
     host: 124.222.35.20
     password: dyw20020304
     port: 6379
-
 grpc:
   server:
     port: 0
