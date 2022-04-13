@@ -6,7 +6,7 @@ spring:
     name: service-consumer
   cloud:
     consul:
-      host: localhost
+      host: 124.222.35.20
       port: 8500
       discovery:
         register: false
@@ -23,4 +23,4 @@ grpc:
       address: 'discovery:///cloud-grpc-server'
       enableKeepAlive: true
       keepAliveWithoutCalls: true
-      negotiationType: plaintext
+      negotiationType: PLAINTEXT

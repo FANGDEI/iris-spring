@@ -15,10 +15,10 @@ public class CodeServiceImpl {
     @GrpcClient("cloud-grpc-server")
     private getCodeGrpc.getCodeBlockingStub blockingStub;
 
-    public void getCode(){
-        CodeRequest request = CodeRequest.newBuilder().setEmail("123").build();
+    public String getCode(String email){
+        CodeRequest request = CodeRequest.newBuilder().setEmail(email).build();
         CodeResponse code = blockingStub.getCode(request);
-        String message = code.getMessage();
-        System.out.println(message);
+        System.out.println(code.getMessage());
+        return code.getMessage();
     }
 }

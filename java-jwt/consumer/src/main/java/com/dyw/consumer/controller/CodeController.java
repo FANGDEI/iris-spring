@@ -1,6 +1,7 @@
 package com.dyw.consumer.controller;
 
 import com.dyw.consumer.service.impl.CodeServiceImpl;
+import com.dyw.jwt.proto.code.CodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,7 +19,7 @@ public class CodeController {
     private CodeServiceImpl codeService;
 
     @GetMapping
-    public void doCode(){
-        codeService.getCode();
+    public String doCode(String email){
+        return codeService.getCode(email);
     }
 }

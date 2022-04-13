@@ -22,4 +22,5 @@ public class GlobalInterceptorConfiguration {
     @GrpcGlobalServerInterceptor
     LogGrpcInterceptor logServerInterceptor() {
         return new LogGrpcInterceptor();
-    }}
+    }
+}

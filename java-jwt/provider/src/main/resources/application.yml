@@ -2,7 +2,7 @@
 spring:
   cloud:
     consul:
-      host: localhost
+      host: 124.222.35.20
       port: 8500
       discovery:
         register: true
@@ -11,13 +11,26 @@ spring:
         port: ${server.port}
         prefer-ip-address: true
         ip-address: ${spring.cloud.client.ip-address}
+        heartbeat:
+          enabled: true
   application:
     name: cloud-grpc-server
+  mail:
+    host: smtp.qq.com #邮件服务器 smtp.qq.com
+    username: 1842501760@qq.com #发送人用户名XXXXXXX@qq.com
+    default-encoding: UTF-8 #字符编码
+    password: xrggjyvgyhrgbhjd  #邮箱授权码 XXXIX
+    port: 25 #端口
+  redis:
+    host: 124.222.35.20
+    password: dyw20020304
+    port: 6379
 grpc:
   server:
     port: 0
-  client:
-    GLOBAL:
-      negotiation-type: tls
+    security:
+      enabled: false
+      certificate-chain: classpath:server.crt
+      private-key: classpath:server.key
 server:
   port: 8080
