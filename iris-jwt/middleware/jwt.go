@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"iris-jwt/handlers"
+	"iris-jwt/model"
 	"iris-jwt/utils"
 	"log"
 
@@ -28,7 +28,7 @@ func JWTMiddleware() *jwt.Middleware {
 			}
 			ctx.StopExecution()
 			ctx.StatusCode(iris.StatusUnauthorized)
-			ctx.JSON(handlers.Result{
+			ctx.JSON(model.Result{
 				Succeed: false,
 				Msg:     err.Error(),
 			})
@@ -42,7 +42,7 @@ func JWTRedisVerifyHandler(ctx iris.Context) {
 	_, err := utils.GetValue(token)
 	if err != nil || token == "" {
 		log.Println("invalid token or the token is nil")
-		ctx.JSON(handlers.Result{
+		ctx.JSON(model.Result{
 			Succeed: false,
 			Msg:     "the token is invalid or the token is null",
 		})
