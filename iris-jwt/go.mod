@@ -9,6 +9,7 @@ require (
 	github.com/iris-contrib/middleware/jwt v0.0.0-20220301201128-27fa0f6a7d7e
 	github.com/json-iterator/go v1.1.12
 	github.com/kataras/iris/v12 v12.2.0-alpha9
+	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921
 	google.golang.org/grpc v1.45.0
 	google.golang.org/protobuf v1.27.1
 )
@@ -54,7 +55,6 @@ require (
 	github.com/vmihailenco/msgpack/v5 v5.3.5 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
 	github.com/yosssi/ace v0.0.5 // indirect
-	golang.org/x/crypto v0.0.0-20220408190544-5352b0902921 // indirect
 	golang.org/x/net v0.0.0-20220407224826-aac1ed45d8e3 // indirect
 	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
 	golang.org/x/text v0.3.7 // indirect

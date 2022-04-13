@@ -77,7 +77,7 @@ func GetCode(ctx iris.Context) {
 	code := utils.GetVerificationCode()
 
 	// 发送邮件验证码
-	err := utils.SendEmail("Iris-Spring", userDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
+	err := utils.SendEmail("Fang&Devil", userDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
 	if err != nil {
 		log.Println("failed to send the eamil.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因验证码发送错误")
