@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"iris-jwt/repo"
 	"iris-jwt/utils"
 	"log"
@@ -71,8 +72,17 @@ func GetCode(ctx iris.Context) {
 	}
 
 	code := utils.GetVerificationCode()
-
-	utils.SendEmail("Iris-Spring", emailDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
+	fmt.Println(code)
+	body := "验证码十五分钟之内有效<br>验证码: " + code
+	fmt.Printf("body: %v\n", body)
+	ctx.HTML(body)
+	err := utils.SendEmail("Iris-Spring", emailDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
+	if err != nil {
+		ctx.JSON(Result{
+			Succeed: false,
+			Msg:     "未知原因验证码发送错误",
+		})
+	}
 }
 
 func Register(ctx iris.Context) {
