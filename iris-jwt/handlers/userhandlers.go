@@ -10,6 +10,7 @@ import (
 
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserDto struct {
@@ -35,7 +36,9 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	if user.Password == userDto.Password {
+	println(user.Password)
+
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userDto.Password)); err == nil {
 		m := make(map[string]string)
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 			"id":         user.Id,
@@ -128,11 +131,19 @@ func Register(ctx iris.Context) {
 	errDeleteValue := utils.DeleteValue(userDto.Code)
 	if errDeleteValue != nil {
 		log.Println("failed to delete value from redis")
-		utils.ResultWithoutData(ctx, false, "未知原因注册失败，请稍后重试")
+		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
 
-	cnt, errInsert := repo.InsertUser(userDto.Username, userDto.Password, userDto.Email)
+	// 密码加密
+	hash, errHash := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
+	if errHash != nil {
+		log.Println("failed to get the hash with the password")
+		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
+	}
+	encodePassword := string(hash)
+
+	cnt, errInsert := repo.InsertUser(userDto.Username, encodePassword, userDto.Email)
 	if errInsert != nil || cnt == 0 {
 		log.Println("failed to insert user into db.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
