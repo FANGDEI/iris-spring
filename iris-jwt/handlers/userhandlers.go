@@ -116,7 +116,7 @@ func Register(ctx iris.Context) {
 
 	email, errGet := utils.GetValue(userDto.Code)
 	if errGet != nil {
-		log.Println("failed to get value from redis.", err)
+		log.Println("failed to get value from redis.", errGet)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
@@ -145,7 +145,7 @@ func Register(ctx iris.Context) {
 
 	cnt, errInsert := repo.InsertUser(userDto.Username, encodePassword, userDto.Email)
 	if errInsert != nil || cnt == 0 {
-		log.Println("failed to insert user into db.", err)
+		log.Println("failed to insert user into db.", errInsert)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
