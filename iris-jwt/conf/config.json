@@ -1,5 +1,6 @@
 {
   "port": ":7777",
+  "consuladdr": "124.222.35.20:8500",
   "db": {
     "dbname": "fang",
     "addr": "110.42.159.47:7778",
@@ -14,7 +15,7 @@
   "mail": {
     "serverhost": "smtp.qq.com",
     "serverport": 465,
-    "formeamil": "1842501760@qq.com",
-    "password": "xrggjyvgyhrgbhjd"
+    "formeamil": "1639579565@qq.com",
+    "password": "vahuylrfbofaddbh"
   }
 }

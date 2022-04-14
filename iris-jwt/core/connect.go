@@ -1,17 +1,24 @@
-package consul
+package core
 
 import (
+	"fmt"
+	"iris-jwt/config"
 	"log"
 
 	consulapi "github.com/hashicorp/consul/api"
 )
 
-const (
-	consulAgentAddress = "124.222.35.20:8500"
+var (
+	consulAgentAddress = config.Configuration.ConsulAddr
+	ServiceMap         map[string]string
 )
 
+func init() {
+	ServiceMap = make(map[string]string)
+}
+
 // 从consul中发现服务
-func ConsulFindServer() {
+func ConsulFindServer(serverName string) {
 	// 创建连接consul服务配置
 	config := consulapi.DefaultConfig()
 	config.Address = consulAgentAddress
@@ -21,16 +28,15 @@ func ConsulFindServer() {
 	}
 
 	// 获取指定service
-	service, _, err := client.Agent().Service("cloud-grpc-server-01", nil)
-	if err == nil {
-		log.Println(service.Address)
-		log.Println(service.Port)
+	service, _, err := client.Agent().Service(serverName, nil)
+	if err != nil {
+		log.Println("failed to get service")
 	}
 
+	ServiceMap[serverName] = service.Address + ":" + fmt.Sprintf("%d", service.Port)
 	// 只获取健康的service
 	// serviceHealthy, _, err := client.Health().Service("service337", "", true, nil)
 	// if err == nil {
-	// 	fmt.Println(serviceHealthy[0].Service.Address)
+	// 	log.Println(serviceHealthy[0].Service.Address)
 	// }
-
 }

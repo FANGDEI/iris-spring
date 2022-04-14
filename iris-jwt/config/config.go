@@ -23,10 +23,11 @@ func init() {
 }
 
 type configuration struct {
-	Port  string  `json:"port"`
-	Db    db      `json:"db"`
-	Redis redisDB `json:"redis"`
-	Mail  mail    `json:"mail"`
+	Port       string  `json:"port"`
+	ConsulAddr string  `json:"consuladdr"`
+	Db         db      `json:"db"`
+	Redis      redisDB `json:"redis"`
+	Mail       mail    `json:"mail"`
 }
 
 type db struct {

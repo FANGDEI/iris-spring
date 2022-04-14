@@ -2,7 +2,7 @@ package main
 
 import (
 	"iris-jwt/config"
-	"iris-jwt/consul"
+	"iris-jwt/core"
 	"iris-jwt/router"
 	"log"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	consul.ConsulFindServer()
+	core.ConsulFindServer("cloud-grpc-server-01")
 
 	app := iris.New()
 
