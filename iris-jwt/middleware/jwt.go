@@ -38,7 +38,7 @@ func JWTMiddleware() *jwt.Middleware {
 }
 
 // Redis验证 token 中间件
-func JWTRedisVerifyHandler(ctx iris.Context) {
+func JWTRedisVerifyMiddleware(ctx iris.Context) {
 	token := ctx.GetHeader("Authorization")
 	_, err := utils.GetValue(token)
 	if err != nil || token == "" {
