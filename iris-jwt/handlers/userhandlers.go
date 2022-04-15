@@ -36,8 +36,6 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	println(user.Password)
-
 	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userDto.Password)); err == nil {
 		m := make(map[string]string)
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
@@ -154,9 +152,7 @@ func Register(ctx iris.Context) {
 }
 
 func UserService(ctx iris.Context) {
-	jwtInfo := ctx.Values().Get("jwt").(*jwt.Token).Claims
-	ctx.JSON(jwtInfo)
-	ctx.HTML("<h1> this is a service </h1>")
+	ctx.HTML("<h1> this is a service for everyone </h1>")
 }
 
 func Logout(ctx iris.Context) {
