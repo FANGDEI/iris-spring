@@ -10,6 +10,7 @@ import (
 
 	"github.com/iris-contrib/middleware/jwt"
 	"github.com/kataras/iris/v12"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserDto struct {
@@ -35,12 +36,14 @@ func Login(ctx iris.Context) {
 		return
 	}
 
-	if user.Password == userDto.Password {
+	println(user.Password)
+
+	if err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userDto.Password)); err == nil {
 		m := make(map[string]string)
 		token := jwt.NewTokenWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"Id":         user.Id,
-			"Username":   user.Username,
-			"Permission": user.Permission,
+			"id":         user.Id,
+			"username":   user.Username,
+			"permission": user.Permission,
 			"iss":        "FANG",
 			"iat":        time.Now().Unix(),
 			// 设置三十天后token过期
@@ -74,7 +77,7 @@ func GetCode(ctx iris.Context) {
 	code := utils.GetVerificationCode()
 
 	// 发送邮件验证码
-	err := utils.SendEmail("Iris-Spring", userDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
+	err := utils.SendEmail("Fang&Devil", userDto.Email, "验证码", "验证码十五分钟之内有效<br>验证码: "+code)
 	if err != nil {
 		log.Println("failed to send the eamil.", err)
 		utils.ResultWithoutData(ctx, false, "未知原因验证码发送错误")
@@ -113,7 +116,7 @@ func Register(ctx iris.Context) {
 
 	email, errGet := utils.GetValue(userDto.Code)
 	if errGet != nil {
-		log.Println("failed to get value from redis.", err)
+		log.Println("failed to get value from redis.", errGet)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
@@ -128,13 +131,21 @@ func Register(ctx iris.Context) {
 	errDeleteValue := utils.DeleteValue(userDto.Code)
 	if errDeleteValue != nil {
 		log.Println("failed to delete value from redis")
-		utils.ResultWithoutData(ctx, false, "未知原因注册失败，请稍后重试")
+		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
 
-	cnt, errInsert := repo.InsertUser(userDto.Username, userDto.Password, userDto.Email)
+	// 密码加密
+	hash, errHash := bcrypt.GenerateFromPassword([]byte(userDto.Password), bcrypt.DefaultCost)
+	if errHash != nil {
+		log.Println("failed to get the hash with the password")
+		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
+	}
+	encodePassword := string(hash)
+
+	cnt, errInsert := repo.InsertUser(userDto.Username, encodePassword, userDto.Email)
 	if errInsert != nil || cnt == 0 {
-		log.Println("failed to insert user into db.", err)
+		log.Println("failed to insert user into db.", errInsert)
 		utils.ResultWithoutData(ctx, false, "未知原因注册失败")
 		return
 	}
