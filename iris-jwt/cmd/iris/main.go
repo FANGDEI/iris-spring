@@ -2,15 +2,16 @@ package main
 
 import (
 	"iris-jwt/config"
-	"iris-jwt/core"
 	"iris-jwt/router"
+	"iris-jwt/service"
 	"log"
 
 	"github.com/kataras/iris/v12"
 )
 
 func main() {
-	core.ConsulFindServer("cloud-grpc-server-01")
+	go service.RunGetCodeService()
+	go service.RunRegisterService()
 
 	app := iris.New()
 

@@ -6,8 +6,11 @@ import (
 	"iris-jwt/repo"
 	"iris-jwt/utils"
 	"log"
+	"net"
 
 	"golang.org/x/crypto/bcrypt"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type RegisterServer struct {
@@ -61,4 +64,19 @@ func register(username, password, code, email string) *re.RegisterResponse {
 	}
 
 	return &re.RegisterResponse{Succeed: true, Message: "注册成功"}
+}
+
+func RunRegisterService() {
+	log.Println("Register service is running...")
+	listener, err := net.Listen("tcp", ":50052")
+	if err != nil {
+		log.Println("failed to listen.", err)
+	}
+
+	s := grpc.NewServer()
+	re.RegisterRegisterServer(s, &RegisterServer{})
+	reflection.Register(s)
+	if err := s.Serve(listener); err != nil {
+		log.Println("Register failed to server.", err)
+	}
 }

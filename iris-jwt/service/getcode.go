@@ -5,8 +5,12 @@ import (
 	"iris-jwt/proto/getcode"
 	"iris-jwt/utils"
 	"log"
+	"net"
 	"regexp"
 	"time"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 )
 
 type GetCodeServer struct {
@@ -40,4 +44,19 @@ func getCode(email string) *getcode.CodeResponse {
 	}
 
 	return &getcode.CodeResponse{Succeed: true, Message: "验证码已发送"}
+}
+
+func RunGetCodeService() {
+	log.Println("GetCode service is running...")
+	listener, err := net.Listen("tcp", ":50051")
+	if err != nil {
+		log.Println("failed to listen.", err)
+	}
+
+	s := grpc.NewServer()
+	getcode.RegisterGetCodeServer(s, &GetCodeServer{})
+	reflection.Register(s)
+	if err := s.Serve(listener); err != nil {
+		log.Println("GetCode failed to server.", err)
+	}
 }
