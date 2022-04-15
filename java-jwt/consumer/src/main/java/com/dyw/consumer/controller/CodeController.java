@@ -15,8 +15,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("code")
 public class CodeController {
 
-    @Autowired
-    private CodeServiceImpl codeService;
+    private final CodeServiceImpl codeService;
+
+    public CodeController(CodeServiceImpl codeService) {
+        this.codeService = codeService;
+    }
 
     @GetMapping
     public String doCode(String email){
