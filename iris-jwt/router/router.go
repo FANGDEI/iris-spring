@@ -13,6 +13,7 @@ func Router(app *iris.Application) {
 	app.Post("/login", handlers.Login)
 	app.Post("/getCode", handlers.GetCode)
 	app.Post("/register", handlers.Register)
-	app.Get("/logout", j.Serve, middleware.JWTRedisVerifyHandler, handlers.Logout)
-	app.Get("/userService", j.Serve, middleware.JWTRedisVerifyHandler, handlers.UserService)
+	app.Get("/logout", j.Serve, middleware.JWTRedisVerifyMiddleware, handlers.Logout)
+	app.Get("/userService", j.Serve, middleware.JWTRedisVerifyMiddleware, handlers.UserService)
+	app.Get("/adminService", j.Serve, middleware.JWTRedisVerifyMiddleware, middleware.AuthorizationMiddleware, handlers.AdminService)
 }
