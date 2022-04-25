@@ -2,17 +2,14 @@ package main
 
 import (
 	"iris-jwt/config"
+	_ "iris-jwt/handlers"
 	"iris-jwt/router"
-	"iris-jwt/service"
 	"log"
 
 	"github.com/kataras/iris/v12"
 )
 
 func main() {
-	go service.RunGetCodeService()
-	go service.RunRegisterService()
-
 	app := iris.New()
 
 	router.Router(app)

@@ -10,6 +10,9 @@ import (
 func Router(app *iris.Application) {
 	j := middleware.JWTMiddleware()
 
+	app.Get("/check", func(ctx iris.Context) {
+		ctx.WriteString("the check function is ok")
+	})
 	app.Post("/login", handlers.Login)
 	app.Post("/getCode", handlers.GetCode)
 	app.Post("/register", handlers.Register)
