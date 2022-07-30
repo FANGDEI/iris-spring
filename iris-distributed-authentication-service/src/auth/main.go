@@ -1,10 +1,11 @@
 package main
 
 import (
-	_ "distributed/authentication/store/local"
+	"distributed/authentication/gateway"
+	"distributed/authentication/store/local"
 	"flag"
-
 	"github.com/kataras/iris/v12"
+	"log"
 )
 
 var (
@@ -12,7 +13,13 @@ var (
 )
 
 func main() {
-	app := iris.New()
+	local.M.DeleteUserByUsername()
+	flag.Parse()
 
-	app.Run(iris.Addr("0.0.0.0:" + *port))
+	app := gateway.New()
+
+	err := app.Run(iris.Addr(":" + *port))
+	if err != nil {
+		log.Fatalf("[IRIS SERVE ERROR] %v", err)
+	}
 }

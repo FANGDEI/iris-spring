@@ -1,20 +1,16 @@
 package center
 
 import (
-	"log"
-	"os"
-
 	consul "github.com/hashicorp/consul/api"
+	"log"
 )
-
-var addr = os.Getenv("consul")
 
 var client *consul.Client
 
 func init() {
 	var err error
 	config := consul.DefaultConfig()
-	config.Address = addr
+	config.Address = consulAddr
 	client, err = consul.NewClient(config)
 	if err != nil {
 		log.Fatalln("[INIT CONSUL]", err)

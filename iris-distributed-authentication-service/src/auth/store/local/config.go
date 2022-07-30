@@ -10,5 +10,5 @@ type Config struct {
 }
 
 func (c *Config) Key() string {
-	return "store/local/node1"
+	return "store/local/auth"
 }

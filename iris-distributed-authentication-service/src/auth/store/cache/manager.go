@@ -16,7 +16,6 @@ type Manager struct {
 
 func init() {
 	var err error
-
 	config.GetConfig(&c)
 	M, err = New()
 	if err != nil {

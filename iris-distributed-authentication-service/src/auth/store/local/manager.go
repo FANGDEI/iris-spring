@@ -17,7 +17,6 @@ type Manager struct {
 
 func init() {
 	var err error
-
 	config.GetConfig(&c)
 	M, err = New()
 	if err != nil {
@@ -28,7 +27,7 @@ func init() {
 func New() (*Manager, error) {
 	db, err := gorm.Open(
 		mysql.New(mysql.Config{
-			DSN: fmt.Sprintf("%s:%s@tcp(%s:%s)/fang?charset=utf8mb4&parseTime=True&loc=Local",
+			DSN: fmt.Sprintf("%s:%s@tcp(%s:%s)/auth?charset=utf8mb4&parseTime=True&loc=Local",
 				c.Username,
 				c.Password,
 				c.Addr,
